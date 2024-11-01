@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Search } from 'lucide-react'
 import RecipeCard from '../components/RecipeCard'
+import { getRandomColor } from '../lib/utils'
 
-const APP_ID = "ffd1bc96"
-const APP_KEY = "26b08172e9eb44edc0cb92b7d202234a"
+const APP_ID = import.meta.env.VITE_APP_ID
+const APP_KEY = import.meta.env.VITE_APP_KEY
 
 const HomePage = () => {
    const[recipes, setRecipes] = useState([])
@@ -27,11 +28,16 @@ const HomePage = () => {
     fetchRecipes('chicken'); // Replace 'chicken' with your desired search query
   }, [])
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchRecipes(e.target[0].value);
+  }
+
   return (
     <div className='bg-[#faf9fb] p-10 flex-1'>
       <div className='max-w-screen-lg max-auto'>
 
-      <form>
+      <form onSubmit={handleSearch}>
         <label className='input shadow-md flex items-center gap-2'>
           <Search size={"24"} />
 
@@ -45,7 +51,9 @@ const HomePage = () => {
       <p className='text-slate-500 font-semibold ml-1 my-2 text-sm tracking-tight'>Popular choices</p>
 
       <div className='grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-        {!loading && recipes.map(({ recipe }, index)=> <RecipeCard key={index} recipe={recipe}></RecipeCard>)}
+        {!loading && recipes.map(({ recipe }, index)=> (
+            <RecipeCard key={index} recipe={recipe} {...getRandomColor()}/>
+        ))}
 
         {loading && 
         [...Array(9)].map((_, index) => (
